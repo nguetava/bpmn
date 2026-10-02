@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.bpmn;
+
+grammar WorkflowWithTimer extends de.monticore.bpmn.Workflow,
+                                  de.monticore.temporal.TimeTriggerConditions {
+  start WorkflowCompilationUnit;
+
+  // This split is integration-specific. WorkflowDSL already owns the
+  // AfterPeriodCondition extension point, which is overridden below so legacy
+  // and typed after syntax share the host production. On, every, and cron have
+  // no equivalent WorkflowDSL production and therefore use this new bridge.
+  TimeTriggerTimerCondition implements TimerCondition =
+    condition:NonAfterTimeTriggerCondition;
+
+  @Override
+  AfterPeriodCondition implements TimerCondition =
+    condition:AfterCondition;
+
+}
