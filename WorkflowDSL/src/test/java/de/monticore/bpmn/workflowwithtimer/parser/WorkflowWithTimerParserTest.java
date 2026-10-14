@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.Timeout;
-import de.monticore.temporal.timetriggerconditions._ast.ASTAfterDurationCondition;
-import de.monticore.temporal.timetriggerconditions._ast.ASTAfterISOPeriodCondition;
+import de.monticore.temporal.timetriggerconditions._ast.ASTAfterCondition;
 import de.monticore.temporal.timetriggerconditions._ast.ASTEveryTimeCondition;
 import de.monticore.bpmn.workflowwithtimer.WorkflowWithTimerMill;
 import de.monticore.bpmn.workflowwithtimer._ast.ASTAfterPeriodCondition;
@@ -35,23 +34,25 @@ public class WorkflowWithTimerParserTest {
   @Test
   public void testAfterTimerWorkflowParses() throws IOException {
     WorkflowWithTimerParser parser = WorkflowWithTimerMill.parser();
-    var result = parser.parse("src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/AfterTimerWorkflow.wfm");
+    var result = parser.parse(
+        "src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/AfterTimerWorkflow.wfm");
     
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    List<ASTAfterDurationCondition> conditions = new ArrayList<>();
+    List<ASTAfterCondition> conditions = new ArrayList<>();
     var traverser = WorkflowWithTimerMill.inheritanceTraverser();
-    traverser.add4WorkflowWithTimer(new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
-      
-      @Override
-      public void visit(ASTAfterPeriodCondition node) {
-        if (node.getCondition() instanceof ASTAfterDurationCondition) {
-          conditions.add((ASTAfterDurationCondition) node.getCondition());
-        }
-      }
-      
-    });
+    traverser.add4WorkflowWithTimer(
+        new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
+          
+          @Override
+          public void visit(ASTAfterPeriodCondition node) {
+            if (node.getCondition().isPresentDuration()) {
+              conditions.add(node.getCondition());
+            }
+          }
+          
+        });
     result.get().accept(traverser);
     
     assertEquals(1, conditions.size());
@@ -61,23 +62,25 @@ public class WorkflowWithTimerParserTest {
   @Timeout(5)
   public void testIsoTimerWorkflowUsesStructuredPeriod() throws IOException {
     WorkflowWithTimerParser parser = WorkflowWithTimerMill.parser();
-    var result = parser.parse("src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/TimerWorkflow.wfm");
+    var result = parser.parse(
+        "src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/TimerWorkflow.wfm");
     
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
-    List<ASTAfterISOPeriodCondition> conditions = new ArrayList<>();
+    List<ASTAfterCondition> conditions = new ArrayList<>();
     var traverser = WorkflowWithTimerMill.inheritanceTraverser();
-    traverser.add4WorkflowWithTimer(new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
-      
-      @Override
-      public void visit(ASTAfterPeriodCondition node) {
-        if (node.getCondition() instanceof ASTAfterISOPeriodCondition) {
-          conditions.add((ASTAfterISOPeriodCondition) node.getCondition());
-        }
-      }
-      
-    });
+    traverser.add4WorkflowWithTimer(
+        new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
+          
+          @Override
+          public void visit(ASTAfterPeriodCondition node) {
+            if (node.getCondition().isPresentPeriod()) {
+              conditions.add(node.getCondition());
+            }
+          }
+          
+        });
     result.get().accept(traverser);
     
     assertEquals(1, conditions.size());
@@ -107,16 +110,17 @@ public class WorkflowWithTimerParserTest {
     
     List<ASTEveryTimeCondition> conditions = new ArrayList<>();
     var traverser = WorkflowWithTimerMill.inheritanceTraverser();
-    traverser.add4WorkflowWithTimer(new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
-      
-      @Override
-      public void visit(ASTTimeTriggerTimerCondition node) {
-        if (node.getCondition() instanceof ASTEveryTimeCondition every) {
-          conditions.add(every);
-        }
-      }
-      
-    });
+    traverser.add4WorkflowWithTimer(
+        new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
+          
+          @Override
+          public void visit(ASTTimeTriggerTimerCondition node) {
+            if (node.isPresentEveryCondition()) {
+              conditions.add(node.getEveryCondition());
+            }
+          }
+          
+        });
     result.get().accept(traverser);
     
     assertEquals(1, conditions.size(), condition);

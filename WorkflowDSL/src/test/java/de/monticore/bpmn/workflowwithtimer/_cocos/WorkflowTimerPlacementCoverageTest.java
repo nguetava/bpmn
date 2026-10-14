@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.bpmn.workflowwithtimer.cocos;
+package de.monticore.bpmn.workflowwithtimer._cocos;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +33,7 @@ public class WorkflowTimerPlacementCoverageTest {
   public void testEventsWithoutTimeTriggerConditionsAreIgnored() throws IOException {
     coCo.check(parseEvent("event Plain;"));
     coCo.check(parseEvent("event Legacy catch timer [at 12:30];"));
+    coCo.check(parseEvent("event LegacyDate catch timer [on 2026-07-20 at 12:30];"));
     assertTrue(coCo.getConditions(parseEvent("event Cancel throw cancel;")).isEmpty());
     
     assertTrue(Log.getFindings().isEmpty(), Log.getFindings().toString());
@@ -91,4 +92,3 @@ public class WorkflowTimerPlacementCoverageTest {
   }
   
 }
-

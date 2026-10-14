@@ -208,7 +208,15 @@ public class WorkflowTimerPlacementIsSupported implements WorkflowASTWFEventCoCo
         conditions.add(after.getCondition());
       }
       else if (timer.getCondition() instanceof ASTTimeTriggerTimerCondition other) {
-        conditions.add(other.getCondition());
+        if (other.isPresentOnCondition()) {
+          conditions.add(other.getOnCondition());
+        }
+        else if (other.isPresentEveryCondition()) {
+          conditions.add(other.getEveryCondition());
+        }
+        else if (other.isPresentCronCondition()) {
+          conditions.add(other.getCronCondition());
+        }
       }
     }
     else if (trigger instanceof ASTWFEventTriggerMultiple multiple) {

@@ -3,7 +3,7 @@ package de.monticore.bpmn.workflowwithtimer.cocos;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-import de.monticore.temporal.timetriggerconditions._cocos.AfterDurationConditionHasValidDuration;
+import de.monticore.temporal.timetriggerconditions._cocos.AfterConditionHasValidDuration;
 import de.monticore.temporal.timetriggerconditions._cocos.CronExpressionIsValid;
 import de.monticore.bpmn.workflowwithtimer._cocos.WorkflowTimerPlacementIsSupported;
 import de.monticore.bpmn.workflowwithtimer._cocos.WorkflowWithTimerCoCoChecker;
@@ -123,7 +123,7 @@ public class WorkflowTimerPlacementIsSupportedTest extends AbstractWorkflowTimer
   @Test
   public void testHostFactoryAlsoRunsConditionValidation() throws IOException {
     checkModelInvalid(taskBoundaryWorkflow("catch", "after 0s"),
-        AfterDurationConditionHasValidDuration.NON_POSITIVE_DURATION);
+        AfterConditionHasValidDuration.NON_POSITIVE_DURATION);
     checkModelInvalid(startWorkflow("cron [*/0 * * * *]"), CronExpressionIsValid.INVALID_STEP);
   }
   

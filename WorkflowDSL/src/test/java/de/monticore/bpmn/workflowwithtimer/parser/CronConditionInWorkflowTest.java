@@ -98,16 +98,17 @@ public class CronConditionInWorkflowTest {
       de.monticore.bpmn.workflow._ast.ASTWorkflowCompilationUnit workflow) {
     List<ASTCronCondition> conditions = new ArrayList<>();
     var traverser = WorkflowWithTimerMill.inheritanceTraverser();
-    traverser.add4WorkflowWithTimer(new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
-      
-      @Override
-      public void visit(ASTTimeTriggerTimerCondition node) {
-        if (node.getCondition() instanceof ASTCronCondition) {
-          conditions.add((ASTCronCondition) node.getCondition());
-        }
-      }
-      
-    });
+    traverser.add4WorkflowWithTimer(
+        new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
+          
+          @Override
+          public void visit(ASTTimeTriggerTimerCondition node) {
+            if (node.isPresentCronCondition()) {
+              conditions.add(node.getCronCondition());
+            }
+          }
+          
+        });
     workflow.accept(traverser);
     return conditions;
   }

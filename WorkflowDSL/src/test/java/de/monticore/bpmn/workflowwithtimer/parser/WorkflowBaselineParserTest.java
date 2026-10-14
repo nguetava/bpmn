@@ -22,7 +22,8 @@ public class WorkflowBaselineParserTest {
   @Test
   public void testExistingBpmnAfterConditionParses() throws IOException {
     WorkflowParser parser = WorkflowMill.parser();
-    var result = parser.parse("src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/TimerWorkflow.wfm");
+    var result = parser.parse(
+        "src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/TimerWorkflow.wfm");
     
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());

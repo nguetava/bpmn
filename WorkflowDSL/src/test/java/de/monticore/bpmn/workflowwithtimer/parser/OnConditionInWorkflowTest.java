@@ -31,23 +31,25 @@ public class OnConditionInWorkflowTest {
   @Test
   public void testStructuredOnConditionParsesInWorkflow() throws IOException {
     WorkflowWithTimerParser parser = WorkflowWithTimerMill.parser();
-    var result = parser.parse("src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/OnWorkflow.wfm");
+    var result = parser.parse(
+        "src/test/resources/de/monticore/bpmn/workflowwithtimer/parser/OnWorkflow.wfm");
     
     assertFalse(parser.hasErrors());
     assertTrue(result.isPresent());
     
     List<ASTOnCondition> conditions = new ArrayList<>();
     var traverser = WorkflowWithTimerMill.inheritanceTraverser();
-    traverser.add4WorkflowWithTimer(new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
-      
-      @Override
-      public void visit(ASTTimeTriggerTimerCondition node) {
-        if (node.getCondition() instanceof ASTOnCondition) {
-          conditions.add((ASTOnCondition) node.getCondition());
-        }
-      }
-      
-    });
+    traverser.add4WorkflowWithTimer(
+        new de.monticore.bpmn.workflowwithtimer._visitor.WorkflowWithTimerVisitor2() {
+          
+          @Override
+          public void visit(ASTTimeTriggerTimerCondition node) {
+            if (node.isPresentOnCondition()) {
+              conditions.add(node.getOnCondition());
+            }
+          }
+          
+        });
     result.get().accept(traverser);
     
     assertEquals(1, conditions.size());
